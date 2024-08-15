@@ -45,3 +45,10 @@ To install and run Bhoomi locally:
     ```bash
     cd bhoomi
     ```
+## Pre-trained Models
+
+The AI models used in Bhoomi have been custom-trained and saved as `.h5` files. These models are crucial for features like crop recommendation and disease diagnosis. You can download the trained models from the following Google Drive link:
+
+[Download Bhoomi AI Models](https://drive.google.com/drive/folders/1EBbImk0_JJR7-F_BUyp1jXwyPSpjRWz9?usp=sharing)
+
+After downloading, place the `.h5` files in the appropriate directory as specified in the app's configuration.
