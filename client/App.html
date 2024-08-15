@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Disease and Recommendation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="file"],
+        input[type="text"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        #disease-result, #crop-result {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Crop Disease and Crop Recommendation</h1>
+
+    <h2>Disease Prediction</h2>
+    <form id="disease-form">
+        <label for="image-input">Upload an Image:</label>
+        <input type="file" id="image-input" accept="image/*">
+        <button type="submit">Predict Disease</button>
+    </form>
+    <p id="disease-result">Disease: </p>
+
+    <h2>Crop Recommendation</h2>
+    <form id="crop-form">
+        <label for="temperature">Temperature:</label>
+        <input type="text" id="temperature" name="Temperature" placeholder="Enter Temperature">
+
+        <label for="moisture">Moisture:</label>
+        <input type="text" id="moisture" name="Moisture" placeholder="Enter Moisture">
+
+        <label for="nitrogen">Nitrogen:</label>
+        <input type="text" id="nitrogen" name="Nitrogen" placeholder="Enter Nitrogen">
+
+        <label for="phosphorus">Phosphorus:</label>
+        <input type="text" id="phosphorus" name="Phosphorus" placeholder="Enter Phosphorus">
+
+        <label for="potassium">Potassium:</label>
+        <input type="text" id="potassium" name="Potassium" placeholder="Enter Potassium">
+
+        <label for="ph">pH:</label>
+        <input type="text" id="ph" name="pH" placeholder="Enter pH">
+
+        <button type="submit">Get Recommendation</button>
+    </form>
+    <p id="crop-result">Recommended Crop: </p>
+
+    <script>
+     
+        document.getElementById('disease-form').onsubmit = async function(e) {
+            e.preventDefault();
+            let formData = new FormData();
+            formData.append('image', document.getElementById('image-input').files[0]);
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/predict-disease', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log(result);  
+                document.getElementById('disease-result').innerText = `Disease: ${result.disease}`;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('disease-result').innerText = 'Error in prediction';
+            }
+        };
+
+        document.getElementById('crop-form').onsubmit = async function(e) {
+            e.preventDefault();
+
+            const data = {
+                Temperature: document.getElementById('temperature').value,
+                Moisture: document.getElementById('moisture').value,
+                Nitrogen: document.getElementById('nitrogen').value,
+                Phosphorus: document.getElementById('phosphorus').value,
+                Potassium: document.getElementById('potassium').value,
+                pH: document.getElementById('ph').value
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/recommend-crop', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log(result);  
+                document.getElementById('crop-result').innerText = `Recommended Crop: ${result.recommended_crop}`;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('crop-result').innerText = 'Error in recommendation';
+            }
+        };
+    </script>
+</body>
+</html>
